@@ -7,3 +7,7 @@ exports.generateVerificationLink = async (user) => {
   const link = `${HOST}//api/v1/user/verify-me/${token}`;
   return link;
 };
+
+exports.generateAccessToken = async (input) => {
+  return jwt.sign({ id: input._id }, SECRET, { expiresIn: "24h" });
+};

@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import Footer from "../Components/Footer";
 import Header from "../Components/Header";
+import Messenge from "../Components/Messenge";
 
 const Messenger = () => {
   return (
@@ -18,6 +19,8 @@ const Messenger = () => {
                 </span>
               </Link>
             </div>
+
+            {/* online users  */}
             <div className="p-3 flex md:flex-col overflow-x-scroll  hover:overscroll-contain md:overflow-x-hidden">
               <div className="flex p-2 gap-2 items-center mx-5 md:mx-0 hover:bg-slate-300 rounded-xl cursor-pointer">
                 <img
@@ -56,24 +59,22 @@ const Messenger = () => {
               </div>
             </div>
           </div>
+
+          {/* Messenging section begins here */}
           <div className="w-full md:w-[70%] p-4 md:p-5 flex flex-col">
-            <p className="bg-gray-300 self-start px-4 py-1 rounded-md">Hi</p>
-            <p className="bg-gray-400 self-end px-4 py-1 rounded-md">Hello</p>
+            <Messenge own={true} />
 
-            <p className="bg-gray-300 self-start px-4 py-1 rounded-md">
-              How're u doing?
-            </p>
-            <p className="bg-gray-400 self-end px-4 py-1 rounded-md">
-              I'm fine. And u?
+            <p className="bg-gray-400 self-start px-4 py-1 rounded-md">
+              Hello, I'm fine. And u?
             </p>
 
-            <p className="w-full my-3">
-              <input
-                type="text"
+            <p className="w-full my-3 flex items-center">
+              <textarea
                 name="message"
                 className="w-4/5 mr-2 md:w-[90%] md:mr-2 p-3 rounded-lg"
-              />
-              <button className=" p-1 px-2 bg-[#865DFF] rounded-lg hover:bg-[#5e45a8]">
+              ></textarea>
+
+              <button className="py-2 px-3 bg-[#865DFF] rounded-lg hover:bg-[#5e45a8]">
                 Send
               </button>
             </p>
