@@ -5,6 +5,9 @@ import {
   LOGIN_USER_INIT,
   LOGIN_USER_SUCCESS,
   LOGIN_USER_FAILED,
+  GET_FRIEND_INFO_INIT,
+  GET_FRIEND_INFO_SUCCESS,
+  GET_FRIEND_INFO_FAILED,
 } from "../constants/authConstants";
 import axios from "axios";
 
@@ -95,4 +98,38 @@ const loginAction = ({ email, password }) => {
   };
 };
 
-export { registerAction, loginAction };
+// Get a user
+const getUserAction = (userId) => {
+  return async (dispatch) => {
+    try {
+      // initiate the API call
+      dispatch({
+        type: GET_FRIEND_INFO_INIT,
+      });
+
+      // API call
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      const { data } = await axios.get(`/api/v1/user?userId=${userId}`);
+
+      // handle success situation
+      dispatch({
+        type: GET_FRIEND_INFO_SUCCESS,
+        payload: data,
+      });
+    } catch (err) {
+      console.log(err);
+      // handle failed response
+      dispatch({
+        type: GET_FRIEND_INFO_FAILED,
+        payload:
+          err.response && err.response.data ? err.response.data : err.message,
+      });
+    }
+  };
+};
+
+export { registerAction, loginAction, getUserAction };

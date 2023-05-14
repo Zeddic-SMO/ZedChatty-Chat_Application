@@ -7,7 +7,11 @@ exports.checkIfExists = async (data) => {
   try {
     // return await User.findOne({ email: data.email });
     return await User.findOne({
-      $or: [{ email: data.email }, { username: data.username }],
+      $or: [
+        { email: data.email },
+        { username: data.username },
+        { _id: data.id },
+      ],
     });
   } catch (err) {
     throw err;

@@ -96,3 +96,13 @@ exports.signin = async (req, res) => {
     res.status(501).json(err.message);
   }
 };
+
+exports.getUser = async (req, res) => {
+  try {
+    const userId = req.query.userId;
+    const user = await repository.checkIfExists({ id: userId });
+    res.status(200).json(user);
+  } catch (err) {
+    res.status(500).json({ status: "fail", message: err.message });
+  }
+};

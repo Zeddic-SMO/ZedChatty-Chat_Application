@@ -7,6 +7,10 @@ import {
   LOGIN_USER_SUCCESS,
   LOGIN_USER_FAILED,
   LOGIN_USER_RESET,
+  GET_FRIEND_INFO_INIT,
+  GET_FRIEND_INFO_SUCCESS,
+  GET_FRIEND_INFO_FAILED,
+  GET_FRIEND_INFO_RESET,
 } from "../constants/authConstants";
 
 const registerReducer = (state = { loading: false, error: "" }, action) => {
@@ -71,4 +75,32 @@ const loginReducer = (
   }
 };
 
-export { registerReducer, loginReducer };
+const getUserReducer = (
+  state = { loading: false, error: "", friend: null },
+  action
+) => {
+  switch (action.type) {
+    case GET_FRIEND_INFO_INIT:
+      return {
+        ...state,
+        loading: true,
+      };
+    case GET_FRIEND_INFO_SUCCESS:
+      return {
+        loading: false,
+        success: true,
+        friend: action.payload,
+      };
+    case GET_FRIEND_INFO_FAILED:
+      return {
+        loading: false,
+        error: action.payload,
+      };
+    case GET_FRIEND_INFO_RESET:
+      return {};
+    default:
+      return state;
+  }
+};
+
+export { registerReducer, loginReducer, getUserReducer };

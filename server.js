@@ -7,6 +7,7 @@ const path = require("path");
 const DbConnect = require("./server/config/dbCon");
 const userRoute = require("./server/modules/user/routes");
 const ConversationRoutes = require("./server/modules/conversation/ConversationRoute");
+const MessageRoute = require("./server/modules/message/MessageRoute");
 
 // middleware
 app.use(express.json());
@@ -15,7 +16,7 @@ app.use(morgan("dev"));
 app.use(cors());
 
 // routes
-app.use("/api/v1", userRoute, ConversationRoutes);
+app.use("/api/v1", userRoute, ConversationRoutes, MessageRoute);
 
 // Set  up for deployment
 if (process.env.NODE_ENV === "production") {
