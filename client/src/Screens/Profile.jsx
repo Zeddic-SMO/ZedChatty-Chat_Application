@@ -1,8 +1,14 @@
-import { Home, MailOutline, Phone } from "@mui/icons-material";
+import { FaHome } from "react-icons/fa";
+import { HiOutlineMail } from "react-icons/hi";
+import { BsTelephone } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import Footer from "../Components/Footer";
 import Header from "../Components/Header";
 const Profile = () => {
+  const Logout = () => {
+    localStorage.removeItem("user");
+    window.location.reload();
+  };
   return (
     <div className="min-h-screen">
       {/* Header */}
@@ -13,28 +19,34 @@ const Profile = () => {
           <div className="w-full md:w-[35%] p-4 md:p-5 flex flex-col gap-4 border-r-2 border-gray-700">
             <p className="flex items-center gap-3">
               <span className="font-bold">
-                <MailOutline />
+                <HiOutlineMail />
               </span>
               <span> samuel93ortil@gmail.com</span>
             </p>
             <p className="flex items-center gap-3">
               <span className="font-bold">
-                <Phone />
+                <BsTelephone />
               </span>
               <span> +234813 347 8014</span>
             </p>
             <p className="flex items-center gap-3">
               <span className="font-bold">
-                <Home />
+                <FaHome />
               </span>
               <span> Abuja, Nigeria</span>
             </p>
-            <div className="flex justify-center my-5">
+            <div className="flex justify-center items-center my-5 gap-4">
               <Link to="/">
                 <span className="py-2 px-4 bg-[#865DFF] rounded-2xl text-gray-300 hover:bg-[#402984]">
                   Messenger
                 </span>
               </Link>
+              <button
+                onClick={() => Logout()}
+                className="rounded-2xl py-2 px-4 bg-red-800 hover:bg-red-500 text-gray-300"
+              >
+                Log Out
+              </button>
             </div>
           </div>
           <div className="md:w-[65%] p-4 md:p-5 flex flex-col justify-center items-center">
