@@ -100,8 +100,30 @@ exports.signin = async (req, res) => {
 exports.getUser = async (req, res) => {
   try {
     const userId = req.query.userId;
-    const user = await repository.checkIfExists({ id: userId });
-    res.status(200).json(user);
+
+    let user = await repository.checkIfExists({ id: userId });
+    if (!user) {
+      throw new Error("User not found");
+    }
+    const { password, ...others } = user._doc;
+
+    res.status(200).json({ ...others });
+  } catch (err) {
+    res.status(500).json({ status: "fail", message: err.message });
+  }
+};
+
+exports.updateUser = async (req, res) => {
+  try {
+    const { userId } = req.query;
+    if (!userId) {
+      throw Error("Invalid User ID");
+    }
+    await repository.updateUserRecords({ id: userId }, req.body);
+    res.status(200).json({
+      status: "success",
+      message: "Records Successfully Updated",
+    });
   } catch (err) {
     res.status(500).json({ status: "fail", message: err.message });
   }

@@ -5,14 +5,22 @@ import { Link } from "react-router-dom";
 import { FcSettings } from "react-icons/fc";
 import Footer from "../Components/Footer";
 import Header from "../Components/Header";
-import { useSelector } from "react-redux";
-import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
 import Modal from "../Components/Modal";
 import UpdateProfile from "./UpdateProfile";
+import { getUserAction } from "../redux/actions/authAction";
 
 const Profile = () => {
+  const dispatch = useDispatch();
   const [openModal, setOpenModal] = useState(false);
-  const { user } = useSelector((store) => store.login);
+  const { user: loginUser } = useSelector((store) => store.login);
+  const { user } = useSelector((store) => store.user);
+
+  useEffect(() => {
+    dispatch(getUserAction(loginUser._id));
+  }, [loginUser, dispatch]);
+
   const Logout = () => {
     localStorage.removeItem("user");
     window.location.reload();
@@ -21,7 +29,7 @@ const Profile = () => {
     <div className="min-h-screen">
       {openModal && (
         <Modal setOpenModal={setOpenModal}>
-          <UpdateProfile />
+          <UpdateProfile setOpenModal={setOpenModal} />
         </Modal>
       )}
       {/* Header */}
@@ -43,7 +51,7 @@ const Profile = () => {
               <span>
                 {" "}
                 {user && user.phoneNumber ? (
-                  user.phoneNumber
+                  "+234 " + user.phoneNumber
                 ) : (
                   <span className="text-black italic text-sm">
                     Phone Number Here

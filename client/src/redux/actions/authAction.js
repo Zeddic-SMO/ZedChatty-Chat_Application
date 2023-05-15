@@ -5,9 +5,9 @@ import {
   LOGIN_USER_INIT,
   LOGIN_USER_SUCCESS,
   LOGIN_USER_FAILED,
-  GET_FRIEND_INFO_INIT,
-  GET_FRIEND_INFO_SUCCESS,
-  GET_FRIEND_INFO_FAILED,
+  GET_USER_INFO_INIT,
+  GET_USER_INFO_SUCCESS,
+  GET_USER_INFO_FAILED,
 } from "../constants/authConstants";
 import axios from "axios";
 
@@ -104,7 +104,7 @@ const getUserAction = (userId) => {
     try {
       // initiate the API call
       dispatch({
-        type: GET_FRIEND_INFO_INIT,
+        type: GET_USER_INFO_INIT,
       });
 
       // API call
@@ -113,18 +113,19 @@ const getUserAction = (userId) => {
           "Content-Type": "application/json",
         },
       };
-      const { data } = await axios.get(`/api/v1/user?userId=${userId}`);
-
+      // console.log(userId);
+      const { data } = await axios.get(`/api/v1/user?userId=${userId}`, config);
+      // console.log(data);
       // handle success situation
       dispatch({
-        type: GET_FRIEND_INFO_SUCCESS,
+        type: GET_USER_INFO_SUCCESS,
         payload: data,
       });
     } catch (err) {
-      console.log(err);
+      console.log(err.message);
       // handle failed response
       dispatch({
-        type: GET_FRIEND_INFO_FAILED,
+        type: GET_USER_INFO_FAILED,
         payload:
           err.response && err.response.data ? err.response.data : err.message,
       });

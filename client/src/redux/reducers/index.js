@@ -4,7 +4,7 @@ import { registerReducer, loginReducer, getUserReducer } from "./authReducer";
 const rootReducer = combineReducers({
   register: registerReducer,
   login: loginReducer,
-  friend: getUserReducer,
+  user: getUserReducer,
 });
 
 export default rootReducer;

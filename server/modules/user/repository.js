@@ -53,3 +53,16 @@ exports.createNewUser = async (username, email, password) => {
     throw err;
   }
 };
+
+/**
+ *@Desc - Update user records
+ * @param {object} input - Of a user
+ * @returns
+ */
+exports.updateUserRecords = async (user, input) => {
+  try {
+    return await User.findByIdAndUpdate({ _id: user.id }, input, { new: true });
+  } catch (err) {
+    throw err;
+  }
+};
