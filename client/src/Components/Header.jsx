@@ -1,17 +1,27 @@
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Modal from "./Modal";
 import UpdateProfile from "../Screens/UpdateProfile";
+import { getUserAction } from "../redux/actions/authAction";
 
 const Header = () => {
-  const { user } = useSelector((store) => store.login);
+  const dispatch = useDispatch();
+  const { user: loginUser } = useSelector((store) => store.login);
+  const { user } = useSelector((store) => store.user);
   const [openModal, setOpenModal] = useState(false);
+
+  // console.log(loginUser._id);
+  useEffect(() => {
+    dispatch(getUserAction(loginUser._id));
+  }, [loginUser, dispatch]);
+
+  // console.log(user);
 
   return (
     <>
       {openModal && (
         <Modal setOpenModal={setOpenModal}>
-          <UpdateProfile />
+          <UpdateProfile setOpenModal={setOpenModal} />
         </Modal>
       )}
       <div className="w-full h-[200px] md:h-[220px]">
@@ -32,20 +42,20 @@ const Header = () => {
           </div>
           <div className="mt-16 md:mt-0 text-center md:text-left md:ml-[300px] py-4">
             <h1 className="text-[20px] md:text-[35px] pt-3">
-              {user.fullName ? (
+              {user && user.fullName ? (
                 user.fullName
               ) : (
                 <span className="italic text-[19px]">Full Name Here</span>
               )}
             </h1>
             <p className="text-[12px] md:text-[14px] italic">
-              {user.headLine ? (
+              {user && user.headLine ? (
                 user.headLine
               ) : (
                 <span>Enter a headline or Occupation</span>
               )}
             </p>
-            <p className="italic">@{user.username}</p>
+            <p className="italic">@{user?.username}</p>
             <p className="text-[16px] font-thin">
               <span>{user?.followers.length} followers</span>{" "}
               <span>{user?.following.length} followings</span>

@@ -1,13 +1,28 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import Spinner from "../Components/spinner/Spinner";
+import { toast } from "react-toastify";
+import { getUserAction } from "../redux/actions/authAction";
 
-const UpdateProfile = () => {
-  const [img, setImg] = useState(null);
+const UpdateProfile = ({ setOpenModal }) => {
+  const dispatch = useDispatch();
+  const { user: loginUser } = useSelector((store) => store.login);
+  const { user } = useSelector((store) => store.user);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    dispatch(getUserAction(loginUser._id));
+  }, [loginUser, dispatch]);
+
+  // const [img, setImg] = useState(null);
+
   const [userInfo, setUserInfo] = useState({
-    fullName: "",
-    headLine: "",
-    bio: "",
-    phoneNumber: "",
-    location: "",
+    fullName: user?.fullName,
+    headLine: user?.headLine,
+    bio: user?.bio,
+    phoneNumber: user?.phoneNumber,
+    location: user?.location,
   });
 
   //   handle input
@@ -19,8 +34,23 @@ const UpdateProfile = () => {
   };
 
   //   handleSubmit handler
-  const submitUpdateHandler = () => {
-    console.log(userInfo);
+  const submitUpdateHandler = async () => {
+    setLoading(true);
+    try {
+      const { data } = await axios.put(
+        `/api/v1/user?userId=${loginUser._id}`,
+        userInfo
+      );
+
+      if (data.status === "success") {
+        toast.success(data.message);
+        setLoading(false);
+        setOpenModal(false);
+        dispatch(getUserAction(loginUser._id));
+      }
+    } catch (err) {
+      toast.warn(err.message);
+    }
   };
 
   const { fullName, headLine, bio, phoneNumber, location } = userInfo;
@@ -49,7 +79,7 @@ const UpdateProfile = () => {
           name="fullName"
           value={fullName}
           onChange={handleUpdateInput}
-          className="border-b-[1px] block w-full md:w-[80%] md:ml-[15%] outline-none border-gray-800 mb-2"
+          className="border-b-[1px] text-md font-thin block w-full md:w-[80%] md:ml-[15%] outline-none border-gray-800 mb-2"
         />
       </div>
 
@@ -62,7 +92,7 @@ const UpdateProfile = () => {
           name="headLine"
           value={headLine}
           onChange={handleUpdateInput}
-          className="border-b-[1px] block w-full md:w-[80%] md:ml-[15%] outline-none border-gray-800 mb-2"
+          className="border-b-[1px] text-md font-thin block w-full md:w-[80%] md:ml-[15%] outline-none border-gray-800 mb-2"
         />
       </div>
 
@@ -74,7 +104,7 @@ const UpdateProfile = () => {
           name="bio"
           value={bio}
           onChange={handleUpdateInput}
-          className="w-full border-b-[1px] block md:w-[80%] md:ml-[15%] outline-none border-gray-800 mb-2"
+          className="w-full border-b-[1px] text-md font-thin block md:w-[80%] md:ml-[15%] outline-none border-gray-800 mb-2 min-h-[80px]"
         ></textarea>
       </div>
 
@@ -90,7 +120,7 @@ const UpdateProfile = () => {
           name="phoneNumber"
           value={phoneNumber}
           onChange={handleUpdateInput}
-          className="border-b-[1px] block w-full md:w-[80%] md:ml-[15%] outline-none border-gray-800 mb-2"
+          className="border-b-[1px] text-md font-thin block w-full md:w-[80%] md:ml-[15%] outline-none border-gray-800 mb-2"
         />
       </div>
 
@@ -103,17 +133,21 @@ const UpdateProfile = () => {
           name="location"
           value={location}
           onChange={handleUpdateInput}
-          className="border-b-[1px] block w-full md:w-[80%] md:ml-[15%] outline-none border-gray-800 mb-2"
+          className="border-b-[1px] text-md font-thin block w-full md:w-[80%] md:ml-[15%] outline-none border-gray-800 mb-2"
         />
       </div>
 
       <div className="flex justify-center py-2">
-        <button
-          className="bg-gray-700 hover:bg-[#865DFF] py-1 px-4 text-white shadow-md rounded-md"
-          onClick={() => submitUpdateHandler()}
-        >
-          Update
-        </button>
+        {!loading ? (
+          <button
+            className="bg-gray-700 hover:bg-[#865DFF] py-1 px-4 text-white shadow-md rounded-md"
+            onClick={() => submitUpdateHandler()}
+          >
+            Update
+          </button>
+        ) : (
+          <Spinner />
+        )}
       </div>
     </div>
   );
