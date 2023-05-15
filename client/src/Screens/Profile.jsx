@@ -2,15 +2,28 @@ import { FaHome } from "react-icons/fa";
 import { HiOutlineMail } from "react-icons/hi";
 import { BsTelephone } from "react-icons/bs";
 import { Link } from "react-router-dom";
+import { FcSettings } from "react-icons/fc";
 import Footer from "../Components/Footer";
 import Header from "../Components/Header";
+import { useSelector } from "react-redux";
+import { useState } from "react";
+import Modal from "../Components/Modal";
+import UpdateProfile from "./UpdateProfile";
+
 const Profile = () => {
+  const [openModal, setOpenModal] = useState(false);
+  const { user } = useSelector((store) => store.login);
   const Logout = () => {
     localStorage.removeItem("user");
     window.location.reload();
   };
   return (
     <div className="min-h-screen">
+      {openModal && (
+        <Modal setOpenModal={setOpenModal}>
+          <UpdateProfile />
+        </Modal>
+      )}
       {/* Header */}
       <Header />
 
@@ -21,19 +34,49 @@ const Profile = () => {
               <span className="font-bold">
                 <HiOutlineMail />
               </span>
-              <span> samuel93ortil@gmail.com</span>
+              <span> {user && user.email ? user.email : "Email Here"}</span>
             </p>
             <p className="flex items-center gap-3">
               <span className="font-bold">
                 <BsTelephone />
               </span>
-              <span> +234813 347 8014</span>
+              <span>
+                {" "}
+                {user && user.phoneNumber ? (
+                  user.phoneNumber
+                ) : (
+                  <span className="text-black italic text-sm">
+                    Phone Number Here
+                  </span>
+                )}
+              </span>
             </p>
             <p className="flex items-center gap-3">
               <span className="font-bold">
                 <FaHome />
               </span>
-              <span> Abuja, Nigeria</span>
+              <span>
+                {" "}
+                {user && user.location ? (
+                  user.location
+                ) : (
+                  <span className="text-black italic text-sm">
+                    Your Location Here
+                  </span>
+                )}
+              </span>
+            </p>
+            <p className="flex items-center gap-3">
+              <span>
+                <FcSettings />
+              </span>
+
+              <span
+                className="text-sm font-bold text-red-950 underline hover:text-[#865DFF] cursor-pointer"
+                onClick={() => setOpenModal(true)}
+              >
+                Update Profile
+              </span>
             </p>
             <div className="flex justify-center items-center my-5 gap-4">
               <Link to="/">
@@ -51,9 +94,14 @@ const Profile = () => {
           </div>
           <div className="md:w-[65%] p-4 md:p-5 flex flex-col justify-center items-center">
             <p className="py-4 md:py-0">
-              Samuel is an experienced Softare Enginer with over 2 years
-              experience in building responsible full stack web application that
-              works.
+              {user && user.bio ? (
+                user.bio
+              ) : (
+                <span className="font-bold">
+                  Click the update profile button to update your
+                  Bio/About/Professional Summary...
+                </span>
+              )}
             </p>
           </div>
         </div>

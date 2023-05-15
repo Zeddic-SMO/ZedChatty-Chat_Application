@@ -4,6 +4,7 @@ import Register from "./Screens/Register";
 import Profile from "./Screens/Profile";
 import Messenger from "./Screens/Messenger";
 import { useSelector } from "react-redux";
+import UpdateProfile from "./Screens/UpdateProfile";
 
 const AllRoutes = () => {
   const { user } = useSelector((store) => store.login);
@@ -12,7 +13,7 @@ const AllRoutes = () => {
       <Route path="/" element={user ? <Messenger /> : <Login />} />
       <Route path="/login" element={!user ? <Login /> : <Profile />} />
       <Route path="/register" element={!user ? <Register /> : <Profile />} />
-      <Route path="/profile" element={user ? <Profile /> : <Login />} />
+      <Route path="/profile" element={user ? <Profile /> : <Login />} />\
     </Routes>
   );
 };

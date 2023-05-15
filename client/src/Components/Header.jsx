@@ -1,8 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
+import Modal from "./Modal";
+import UpdateProfile from "../Screens/UpdateProfile";
 
 const Header = () => {
+  const { user } = useSelector((store) => store.login);
+  const [openModal, setOpenModal] = useState(false);
+
   return (
     <>
+      {openModal && (
+        <Modal setOpenModal={setOpenModal}>
+          <UpdateProfile />
+        </Modal>
+      )}
       <div className="w-full h-[200px] md:h-[220px]">
         <img
           src="./img/api.jpg"
@@ -14,18 +25,38 @@ const Header = () => {
         <div className="relative w-[80%] mx-auto flex flex-col">
           <div className="flex justify-center md:justify-start">
             <img
-              src="./img/zeddic.png"
+              src={`./img/profileImg.png`}
               alt=""
-              className="w-[150px] md:w-[190px] h-[150px] md:h-[200px] rounded-full absolute top-[-90px] shadow-md shadow-black"
+              className="w-[150px] md:w-[190px] h-[150px] md:h-[200px] rounded-full absolute top-[-90px] shadow-md shadow-black object-cover"
             />
           </div>
           <div className="mt-16 md:mt-0 text-center md:text-left md:ml-[300px] py-4">
-            <h1 className="text-[20px] md:text-[35px] pt-3">Samuel M. Ortil</h1>
+            <h1 className="text-[20px] md:text-[35px] pt-3">
+              {user.fullName ? (
+                user.fullName
+              ) : (
+                <span className="italic text-[19px]">Full Name Here</span>
+              )}
+            </h1>
             <p className="text-[12px] md:text-[14px] italic">
-              Software Engineer || MERN Stack
+              {user.headLine ? (
+                user.headLine
+              ) : (
+                <span>Enter a headline or Occupation</span>
+              )}
             </p>
+            <p className="italic">@{user.username}</p>
             <p className="text-[16px] font-thin">
-              <span>100 followers</span> <span>100 followings</span>
+              <span>{user?.followers.length} followers</span>{" "}
+              <span>{user?.following.length} followings</span>
+            </p>
+            <p>
+              <button
+                className="text-sm border-[2px] p-1 border-[#865DFF] hover:bg-slate-500 hover:text-white"
+                onClick={() => setOpenModal(true)}
+              >
+                Update Profile
+              </button>
             </p>
           </div>
         </div>
