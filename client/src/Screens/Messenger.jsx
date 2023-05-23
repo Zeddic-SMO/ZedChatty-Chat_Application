@@ -6,6 +6,7 @@ import Conversation from "../Components/Conversation";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import socketClient from "../socket-client";
 
 const Messenger = () => {
   const { user } = useSelector((store) => store.login);
@@ -15,9 +16,15 @@ const Messenger = () => {
   const [text, setText] = useState("");
   const scrollRef = useRef();
 
+  // Ref to enable scroll to view
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behaviour: "smooth" });
   }, [messages]);
+
+  // socket
+  useEffect(() => {
+    user && socketClient(user._id);
+  }, [user, messages]);
 
   // To fects a users conversation by passing the user's ID as a parameter
   useEffect(() => {

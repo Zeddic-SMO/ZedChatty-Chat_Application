@@ -1,9 +1,24 @@
 require("dotenv").config();
 const express = require("express");
+const { createServer } = require("http");
 const app = express();
+const path = require("path");
+
+// Middlewares
 const cors = require("cors");
 const morgan = require("morgan");
-const path = require("path");
+
+// socket server with express
+const httpServer = createServer(app);
+const io = require("socket.io")(httpServer, {
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
+  },
+});
+
+// imported files
+const socketOperations = require("./server/socket");
 const DbConnect = require("./server/config/dbCon");
 const userRoute = require("./server/modules/user/routes");
 const ConversationRoutes = require("./server/modules/conversation/ConversationRoute");
@@ -30,11 +45,27 @@ if (process.env.NODE_ENV === "production") {
     res.send("...Welcome ZedChatty App API...");
   });
 
+// Socket.IO connection handler
+io.on("connection", (socket) => {
+  console.log("A user connected");
+
+  socket.on("addUser", (userId) => {
+    // add a user and return an array of users
+    const users = socketOperations.addUser(userId, socket.id);
+    io.emit("getUsers", users);
+  });
+
+  // Handling user disconnection
+  socket.on("disconnect", () => {
+    console.log("User Disconnected");
+  });
+});
+
 // db connect
 const port = process.env.PORT || 3001;
 DbConnect()
   .then(() => {
-    app.listen(port, () => {
+    httpServer.listen(port, () => {
       console.log(`server runing on port ${port} and DB connected`);
     });
   })

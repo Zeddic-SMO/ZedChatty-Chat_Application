@@ -26,7 +26,8 @@
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.0.5",
     "nodemon": "^2.0.22",
-    "postmark": "^3.0.17"
+    "postmark": "^3.0.17",
+    "socket.io": "^4.6.1"
   },
   "devDependencies": {
     "morgan": "^1.10.0"
