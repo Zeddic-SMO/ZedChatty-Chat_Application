@@ -52,12 +52,24 @@ io.on("connection", (socket) => {
   socket.on("addUser", (userId) => {
     // add a user and return an array of users
     const users = socketOperations.addUser(userId, socket.id);
-    io.emit("getUsers", users);
+    // io.emit("getUsers", users);
+  });
+
+  //send and get message
+  socket.on("sendMessage", ({ senderId, receiverId, text }) => {
+    // console.log(senderId, receiverId, text);
+
+    const user = socketOperations.getUser(receiverId);
+    io.to(user.socketId).emit("getMessage", {
+      senderId,
+      text,
+    });
   });
 
   // Handling user disconnection
   socket.on("disconnect", () => {
     console.log("User Disconnected");
+    socketOperations.removeUser(socket.id);
   });
 });
 

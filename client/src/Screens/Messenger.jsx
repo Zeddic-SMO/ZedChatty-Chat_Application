@@ -6,15 +6,18 @@ import Conversation from "../Components/Conversation";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
-import socketClient from "../socket-client";
+import { io } from "socket.io-client";
+import { toast } from "react-toastify";
 
 const Messenger = () => {
   const { user } = useSelector((store) => store.login);
   const [conversations, setConversations] = useState(null);
   const [currentChats, setcurrentChats] = useState(null);
   const [messages, setMessages] = useState([]);
+  const [arrivalMsg, setArrivalMsg] = useState(null);
   const [text, setText] = useState("");
   const scrollRef = useRef();
+  const socket = useRef();
 
   // Ref to enable scroll to view
   useEffect(() => {
@@ -23,8 +26,27 @@ const Messenger = () => {
 
   // socket
   useEffect(() => {
-    user && socketClient(user._id);
-  }, [user, messages]);
+    socket.current = io("ws://localhost:3001");
+    socket.current.on("getMessage", (data) => {
+      setArrivalMsg({
+        sender: data.senderId,
+        text: data.text,
+        createdAt: Date.now(),
+      });
+    });
+  }, []);
+
+  useEffect(() => {
+    arrivalMsg &&
+      currentChats?.members.includes(arrivalMsg.sender) &&
+      setMessages((prev) => [...prev, arrivalMsg]);
+  }, [arrivalMsg, currentChats]);
+
+  useEffect(() => {
+    socket.current.on("connect", () => {
+      socket.current.emit("addUser", user._id);
+    });
+  }, [user]);
 
   // To fects a users conversation by passing the user's ID as a parameter
   useEffect(() => {
@@ -52,11 +74,25 @@ const Messenger = () => {
 
   // Send message
   const handleSendMessage = async () => {
+    if (!text) {
+      toast.warn("Oops, can't sent an empty message");
+      return;
+    }
     const newMessage = {
       conversationId: currentChats?._id,
       senderId: user._id,
       text: text,
     };
+
+    const receiverId = currentChats.members.find(
+      (member) => member !== user._id
+    );
+
+    socket.current.emit("sendMessage", {
+      senderId: user._id,
+      receiverId,
+      text: text,
+    });
 
     // submitting the new message
     try {
